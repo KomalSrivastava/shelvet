@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  overflow-x: hidden;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Reset margins for all sections and components */
+section,
+.component {
+  margin: 0;
+  padding: 0;
+}
+
+footer {
+  margin-top: auto; /* Push footer to the bottom */
+}
+
+
+@font-face {
+  font-family: 'Wilkysta';
+  src: url('/fonts/wilkysta.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Applying the custom font globally */
+body {
+  font-family: 'Wilkysta', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+@media (max-width: 768px) {
+  .summer-collections-container {
+    flex-direction: column; 
+    text-align: center; 
+  }
+
+  .summer-img {
+    width: 80%; 
+    height: auto; 
+    margin: 0 auto; 
+  }
+
+  .summer-content p {
+    padding: 0 20px; 
+  }
+}
+
+@media (max-width: 640px) {
+  /* Tailwind's `sm` breakpoint */
+  .mobile-margin-adjust {
+    margin-top: 200px; /* Adjust this value as needed */
+  }
+}
