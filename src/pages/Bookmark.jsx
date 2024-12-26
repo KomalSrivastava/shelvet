@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Bookmark = () => {
-  // Sample state for bookmarks
+  
   const [bookmarks, setBookmarks] = useState([
     { id: 1, title: "React Documentation", url: "https://reactjs.org" },
     { id: 2, title: "Tailwind CSS", url: "https://tailwindcss.com" },
     { id: 3, title: "MDN Web Docs", url: "https://developer.mozilla.org" },
   ]);
 
-  // Function to remove a bookmark
+  
   const removeBookmark = (id) => {
     setBookmarks(bookmarks.filter((bookmark) => bookmark.id !== id));
   };

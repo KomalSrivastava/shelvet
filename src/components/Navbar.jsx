@@ -85,7 +85,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Link
-                      to="/orders"
+                      to="/cart"
                       className="text-gray-600 hover:text-gray-900"
                     >
                       Orders
@@ -101,10 +101,10 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Link
-                      to="/giftcards"
+                      to="/profile"
                       className="text-gray-600 hover:text-gray-900"
                     >
-                      Gift Cards
+                      Profile
                     </Link>
                   </li>
                   <li>

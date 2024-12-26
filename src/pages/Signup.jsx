@@ -1,40 +1,211 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaEnvelope, FaLock, FaPhoneAlt } from "react-icons/fa";
+import signupImage from "../assets/Rectangle 14.png";
 
-const SignUp = () => {
+const useForm = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+  });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+  });
+
+  const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+  const validatePassword = (password) => password.length >= 6;
+  const validateConfirmPassword = (password, confirmPassword) =>
+    password === confirmPassword;
+  const validatePhone = (phone) => /^[0-9]{10}$/.test(phone);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phone: "",
+    };
+
+    if (!validateEmail(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+      valid = false;
+    }
+
+    if (!validatePassword(formData.password)) {
+      newErrors.password = "Password must be at least 6 characters long.";
+      valid = false;
+    }
+
+    if (!validateConfirmPassword(formData.password, formData.confirmPassword)) {
+      newErrors.confirmPassword = "Passwords do not match.";
+      valid = false;
+    }
+
+    if (!validatePhone(formData.phone)) {
+      newErrors.phone = "Please enter a valid 10-digit phone number.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  return {
+    formData,
+    errors,
+    handleChange,
+    validateForm,
+  };
+};
+
+const InputField = ({
+  id,
+  label,
+  type,
+  value,
+  onChange,
+  error,
+  placeholder,
+  Icon,
+}) => (
+  <div className="relative">
+    <label htmlFor={id} className="text-gray-600 font-medium block mb-1">
+      {label}
+    </label>
+    <div className="flex items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-[#b3876f]">
+      <Icon className="ml-3 text-gray-500" />
+      <input
+        type={type}
+        id={id}
+        name={id}
+        className="w-full px-4 py-3 pl-12 rounded-md focus:outline-none"
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        aria-label={label}
+      />
+    </div>
+    {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+  </div>
+);
+
+const Button = ({ children, isLoading }) => (
+  <button
+    type="submit"
+    className="w-full bg-[#b3876f] text-white py-3 rounded-md hover:bg-[#9a6e5b] focus:outline-none focus:ring-2 focus:ring-[#b3876f] disabled:bg-gray-300"
+    disabled={isLoading}
+  >
+    {isLoading ? (
+      <div className="flex justify-center items-center">
+        <div className="animate-spin w-5 h-5 border-4 border-t-4 border-transparent border-t-[#fff] rounded-full mr-2"></div>
+        Loading...
+      </div>
+    ) : (
+      children
+    )}
+  </button>
+);
+
+const Signup = () => {
+  const { formData, errors, handleChange, validateForm } = useForm();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      setIsLoading(true);
+
+      setTimeout(() => {
+        setIsLoading(false);
+        alert("Signup successful!");
+      }, 2000);
+    }
+  };
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md sm:w-full md:w-96 lg:w-96 xl:w-96">
+    <div className="flex flex-col lg:flex-row justify-center items-center min-h-screen bg-[#d4a78f] py-10 px-4 lg:px-10">
+      <div className="hidden lg:flex items-center justify-start w-full lg:w-1/2 pr-10">
+        <img
+          src={signupImage}
+          alt="Signup Illustration"
+          className="w-full h-auto max-w-md transform -translate-x-10"
+        />
+      </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md sm:w-full md:w-96 lg:w-96 xl:w-96 animate__animated animate__fadeIn">
+        
+        <div className="text-center mb-2">
+          
+          <h1 className="text-xl lg:text-2xl font-bold">Sehlvet</h1>
+        </div>
+
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
           Sign Up
         </h2>
-        <form className="space-y-6">
-          <input
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <InputField
+            id="email"
+            label="Email"
             type="email"
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.email}
+            onChange={handleChange}
+            error={errors.email}
             placeholder="Enter your email"
+            Icon={FaEnvelope}
           />
-          <input
+          <InputField
+            id="phone"
+            label="Phone Number"
+            type="tel"
+            value={formData.phone}
+            onChange={handleChange}
+            error={errors.phone}
+            placeholder="Enter your phone number"
+            Icon={FaPhoneAlt}
+          />
+          <InputField
+            id="password"
+            label="Password"
             type="password"
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.password}
+            onChange={handleChange}
+            error={errors.password}
             placeholder="Enter your password"
+            Icon={FaLock}
           />
-          <input
+          <InputField
+            id="confirmPassword"
+            label="Confirm Password"
             type="password"
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            error={errors.confirmPassword}
             placeholder="Confirm your password"
+            Icon={FaLock}
           />
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-[#9a6e5b] focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Sign Up
-          </button>
+          <Button isLoading={isLoading}>Sign Up</Button>
         </form>
+
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline">
+            <Link to="/login" className="text-[#9a6e5b] hover:underline">
               Login
             </Link>
           </p>
@@ -44,4 +215,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Signup;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-// Notification component with a progress bar and custom animations
+
 const Notification = ({ message, type, onClose }) => {
   const notificationTypes = {
     success: "bg-green-500",
@@ -28,9 +28,9 @@ const Notification = ({ message, type, onClose }) => {
         }
         return prevProgress - 1;
       });
-    }, 50); // Update progress every 50ms
+    }, 50); 
 
-    return () => clearInterval(timer); // Cleanup the interval on unmount
+    return () => clearInterval(timer); 
   }, [onClose]);
 
   return (
@@ -57,18 +57,18 @@ const Notification = ({ message, type, onClose }) => {
 
 const NotificationPage = () => {
   const [notifications, setNotifications] = useState([]);
-  const [position, setPosition] = useState("top-5 right-5"); // Position state
+  const [position, setPosition] = useState("top-5 right-5"); 
 
-  // Function to trigger a new notification
+  
   const triggerNotification = (message, type) => {
-    const id = new Date().getTime(); // Unique ID for each notification
+    const id = new Date().getTime(); 
     setNotifications((prevNotifications) => [
       ...prevNotifications,
       { id, message, type },
     ]);
   };
 
-  // Function to remove a notification
+  
   const removeNotification = (id) => {
     setNotifications((prevNotifications) =>
       prevNotifications.filter((notif) => notif.id !== id)
@@ -124,7 +124,7 @@ const NotificationPage = () => {
         </button>
       </div>
 
-      {/* Position Controls */}
+      
       <div className="flex space-x-4 mb-8">
         <button
           onClick={() => setPosition("top-5 right-5")}
@@ -146,7 +146,7 @@ const NotificationPage = () => {
         </button>
       </div>
 
-      {/* Notifications list */}
+     
       <div className={`fixed ${position} space-y-4 z-50 max-w-xs`}>
         {notifications.map((notif) => (
           <Notification

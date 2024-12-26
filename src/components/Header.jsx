@@ -7,11 +7,12 @@ import home from "../assets/home.png";
 import brand from "../assets/brand.png";
 import clothing from "../assets/clothing.png";
 import collection from "../assets/collection.png";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <header>
-      {/* Hero Section */}
+      
       <div className="bg-[#fdf4ee] flex flex-col items-center justify-center px-4 lg:flex-row lg:justify-between lg:px-20 py-8 lg:py-12">
         <div className="relative mt-4 lg:mt-0 flex items-center justify-center w-full max-w-md h-96 order-1 lg:order-2 z-0">
           <div className="relative w-full h-full flex justify-center items-center">
@@ -47,22 +48,21 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Bottom Navigation for Mobile */}
+      
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-300 shadow-md lg:hidden z-40">
         <nav className="flex justify-around py-3">
           {[
-            { img: home, label: "Home" },
-            { img: collection, label: "Collections" },
-            { img: brand, label: "Brands" },
-            { img: clothing, label: "About Us" },
-          ].map(({ img, label }) => (
-            <button
-              key={label}
-              className="flex flex-col items-center text-gray-700 hover:bg-[#b3876f] hover:rounded-lg p-2"
-            >
-              <img src={img} alt={label} className="w-6 h-6 mb-1" />
-              <span className="text-xs">{label}</span>
-            </button>
+            { img: home, label: "Home", path: "/" },
+            { img: collection, label: "Collections", path: "/collections" },
+            { img: brand, label: "Brands", path: "/brands" },
+            { img: clothing, label: "About Us", path: "/aboutus" },
+          ].map(({ img, label, path }) => (
+            <Link to={path} key={label} className="flex flex-col items-center">
+              <button className="flex flex-col items-center text-gray-700 hover:bg-[#b3876f] hover:rounded-lg p-2">
+                <img src={img} alt={label} className="w-6 h-6 mb-1" />
+                <span className="text-xs">{label}</span>
+              </button>
+            </Link>
           ))}
         </nav>
       </div>
