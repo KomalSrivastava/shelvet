@@ -14,7 +14,7 @@ const ProductDetail = () => {
         price: "$30",
         images: [Pista, DarkGreen, DarkBlue],
         description:
-          "A stylish casual shirt perfect for work from home or casual outings.",
+          "A stylish casual shirt perfect for work from home or casual outings. It's made from high-quality cotton and comes in multiple colors. This shirt offers a comfortable fit, ideal for both work and casual outings. Whether you're attending a meeting or relaxing with friends, this shirt is the perfect choice for any occasion. The fabric is soft and breathable, ensuring you stay comfortable all day long. Available in multiple sizes and colors.",
         colors: ["Red", "Blue", "Green"],
         sizes: ["S", "M", "L", "XL"],
       },
@@ -23,71 +23,14 @@ const ProductDetail = () => {
         title: "Casual Pants",
         price: "$35",
         images: [Pista, DarkGreen, DarkBlue],
-        description: "Comfortable pants for everyday wear.",
+        description:
+          "Comfortable pants for everyday wear. These pants are made with stretchy fabric, offering maximum comfort and flexibility. They come with an elastic waistband for an easy fit and are perfect for casual outings or lounging at home. Available in different colors to match your style.",
         colors: ["Black", "Gray", "Navy"],
         sizes: ["S", "M", "L", "XL"],
       },
     ],
-    "ethnic-wear": [
-      {
-        id: "1",
-        title: "Traditional Kurta",
-        price: "$40",
-        images: [Pista, DarkGreen, DarkBlue],
-        description: "A traditional kurta perfect for festivals and weddings.",
-        colors: ["White", "Red", "Blue"],
-        sizes: ["M", "L", "XL"],
-      },
-      {
-        id: "2",
-        title: "Ethnic Pants",
-        price: "$45",
-        images: [Pista, DarkGreen, DarkBlue],
-        description: "Stylish ethnic pants for formal occasions.",
-        colors: ["Black", "Beige", "Maroon"],
-        sizes: ["S", "M", "L"],
-      },
-    ],
-    "western-wear": [
-      {
-        id: "1",
-        title: "Western Blazer",
-        price: "$50",
-        images: [Pista, DarkGreen, DarkBlue],
-        description: "A stylish Western Blazer perfect for formal events.",
-        colors: ["Black", "Navy", "Gray"],
-        sizes: ["S", "M", "L", "XL"],
-      },
-      {
-        id: "2",
-        title: "Western Jeans",
-        price: "$45",
-        images: [Pista, DarkGreen, DarkBlue],
-        description: "Comfortable Western jeans suitable for casual outings.",
-        colors: ["Blue", "Black", "Gray"],
-        sizes: ["S", "M", "L", "XL"],
-      },
-    ],
-    "sleep-wear": [
-      {
-        id: "1",
-        title: "Cozy Pajama Set",
-        price: "$25",
-        images: [Pista, DarkGreen, DarkBlue],
-        description: "A soft and cozy pajama set for a good night's sleep.",
-        colors: ["Pink", "Blue", "Gray"],
-        sizes: ["S", "M", "L"],
-      },
-      {
-        id: "2",
-        title: "Sleep Shorts",
-        price: "$20",
-        images: [Pista, DarkGreen, DarkBlue],
-        description: "Lightweight sleep shorts for a comfortable night.",
-        colors: ["White", "Black", "Red"],
-        sizes: ["S", "M", "L"],
-      },
-    ],
+    
+    // Other categories here...
   };
 
   const { category, id } = useParams();
@@ -102,18 +45,20 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
   const [popupMessage, setPopupMessage] = useState("");
   const [popupVisible, setPopupVisible] = useState(false);
-  const [quantity, setQuantity] = useState(1); 
-
-  
+  const [quantity, setQuantity] = useState(1);
   const [cart, setCart] = useState(() => {
     const storedCart = localStorage.getItem("cart");
     return storedCart ? JSON.parse(storedCart) : [];
   });
-
   const [wishlist, setWishlist] = useState(() => {
     const storedWishlist = localStorage.getItem("wishlist");
     return storedWishlist ? JSON.parse(storedWishlist) : [];
   });
+
+  // Feedback state
+  const [reviewText, setReviewText] = useState("");
+  const [rating, setRating] = useState(0);
+  const [reviewImage, setReviewImage] = useState(null);
 
   const handlePreviousImage = () => {
     setSelectedImageIndex((prevIndex) =>
@@ -135,19 +80,17 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     const item = { ...product, selectedColor, selectedSize, quantity };
-    console.log("Adding to cart:", item); 
     const updatedCart = [...cart, item];
     setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); 
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
     showPopup("Added to Cart!");
   };
 
   const handleAddToWishlist = () => {
     const item = { ...product, selectedColor, selectedSize };
-    console.log("Adding to wishlist:", item); 
     const updatedWishlist = [...wishlist, item];
     setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist)); 
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
     showPopup("Added to Wishlist!");
   };
 
@@ -158,12 +101,46 @@ const ProductDetail = () => {
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
 
-  
   useEffect(() => {
     if (isNaN(quantity)) {
-      setQuantity(1); 
+      setQuantity(1);
     }
   }, [quantity]);
+
+  const handleReviewImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setReviewImage(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmitReview = () => {
+    if (reviewText && rating > 0) {
+      // Submit review logic (could be saved to local storage or sent to an API)
+      console.log("Review Submitted:", { reviewText, rating, reviewImage });
+      setReviewText("");
+      setRating(0);
+      setReviewImage(null);
+      showPopup("Review submitted!");
+    } else {
+      showPopup("Please fill out all fields!");
+    }
+  };
+
+  const openMoreDetails = () => {
+    const newWindow = window.open("", "_blank");
+    newWindow.document.write(`
+      <html>
+        <head><title>${product.title} - More Details</title></head>
+        <body style="font-family: Arial, sans-serif; padding: 20px;">
+          <h1>${product.title}</h1>
+          <p><strong>Price:</strong> ${product.price}</p>
+          <p><strong>Description:</strong> ${product.description}</p>
+          <p><a href="javascript:window.history.back();" style="color: #b3876f; text-decoration: none;">Go Back</a></p>
+        </body>
+      </html>
+    `);
+  };
 
   return (
     <div className="container py-10 px-4">
@@ -232,6 +209,12 @@ const ProductDetail = () => {
             {product.price}
           </p>
           <p className="mt-4 text-lg">{product.description}</p>
+          <button
+            onClick={openMoreDetails}
+            className="mt-4 text-[#b3876f] underline"
+          >
+            More
+          </button>
 
           <div className="mt-4">
             <label className="block text-lg mb-2">Select Color:</label>
@@ -242,86 +225,117 @@ const ProductDetail = () => {
                   onClick={() => setSelectedColor(color)}
                   className={`w-10 h-10 rounded-full border-2 transition-all duration-300 ${
                     selectedColor === color
-                      ? "border-[#b3876f] scale-110 shadow-md"
+                      ? "border-[#b3876f] ring-2 ring-[#b3876f]"
                       : "border-gray-300"
                   }`}
-                  style={{
-                    backgroundColor:
-                      color === "Red"
-                        ? "#FF0000"
-                        : color === "Blue"
-                        ? "#0000FF"
-                        : color === "Green"
-                        ? "#008000"
-                        : "gray",
-                  }}
-                >
-                  <span className="sr-only">{color}</span>
-                </button>
+                  style={{ backgroundColor: color.toLowerCase() }}
+                />
               ))}
             </div>
           </div>
 
           <div className="mt-4">
-            <label className="block text-lg">Select Size:</label>
-            <div className="flex gap-4 mt-2">
-              {product.sizes.map((size, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedSize(size)}
-                  className={`px-4 py-2 border rounded-full text-lg ${
-                    selectedSize === size
-                      ? "bg-[#b3876f] text-white"
-                      : "bg-white text-[#b3876f]"
-                  } hover:bg-[#a2765b] transition duration-300`}
-                >
+            <label className="block text-lg mb-2">Select Size:</label>
+            <select
+              value={selectedSize}
+              onChange={(e) => setSelectedSize(e.target.value)}
+              className="w-full p-2 border-2 rounded-lg"
+            >
+              {product.sizes.map((size) => (
+                <option key={size} value={size}>
                   {size}
-                </button>
+                </option>
               ))}
-            </div>
+            </select>
           </div>
 
-          <div className="mt-6 flex items-center gap-4">
+          <div className="flex items-center gap-4 mt-4">
             <button
               onClick={decrementQuantity}
-              className="px-4 py-2 bg-gray-200 rounded-full text-xl"
+              className="bg-[#b3876f] text-white px-4 py-2 rounded-md"
             >
               -
             </button>
-            <span className="text-xl">{quantity}</span>
+            <span>{quantity}</span>
             <button
               onClick={incrementQuantity}
-              className="px-4 py-2 bg-gray-200 rounded-full text-xl"
+              className="bg-[#b3876f] text-white px-4 py-2 rounded-md"
             >
               +
             </button>
           </div>
 
-          <div className="flex mt-6 gap-6">
+          <div className="mt-6">
             <button
               onClick={handleAddToCart}
-              className="px-6 py-3 bg-[#b3876f] text-white rounded-lg shadow-md hover:bg-[#a2765b] transition duration-300"
+              className="w-full p-3 bg-[#b3876f] text-white rounded-lg hover:bg-[#8f6d4b] transition"
             >
               Add to Cart
             </button>
             <button
               onClick={handleAddToWishlist}
-              className="px-6 py-3 bg-gray-300 text-black rounded-lg shadow-md hover:bg-gray-400 transition duration-300"
+              className="w-full mt-4 p-3 bg-gray-200 text-[#b3876f] rounded-lg hover:bg-gray-300 transition"
             >
               Add to Wishlist
             </button>
-          </div>
 
-          <div className="mt-4 text-center">
-            <Link to="/cart" className="text-blue-500 hover:underline">
-              Go to Cart ({cart.length})
-            </Link>{" "}
-            |{" "}
-            <Link to="/wishlist" className="text-blue-500 hover:underline">
-              Go to Wishlist ({wishlist.length})
-            </Link>
+            {/* Go to Cart and Go to Wishlist Buttons */}
+            <div className="mt-4 text-center">
+              <Link to="/cart" className="text-[#b3876f]">
+                Go to Cart
+              </Link>{" "}
+              |{" "}
+              <Link to="/wishlist" className="text-[#b3876f]">
+                Go to Wishlist
+              </Link>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Review Section */}
+      <div className="mt-10">
+        <h2 className="text-2xl font-semibold">Write a Review</h2>
+        <textarea
+          value={reviewText}
+          onChange={(e) => setReviewText(e.target.value)}
+          className="w-full p-4 mt-2 border-2 rounded-lg text-lg" // Increased padding and font size
+          placeholder="Write your review here..."
+          style={{ minHeight: "150px" }} // Increased height
+        ></textarea>
+
+        <div className="mt-4">
+          <label className="block text-lg">Rating:</label>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                onClick={() => setRating(star)}
+                className={`p-2 text-3xl ${
+                  rating >= star ? "text-yellow-500" : "text-gray-300"
+                }`} // Increased font size
+              >
+                ★
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="block text-lg mb-2">Upload an Image:</label>
+          <input
+            type="file"
+            onChange={handleReviewImageChange}
+            className="w-full p-2 border-2 rounded-lg"
+          />
+        </div>
+
+        <button
+          onClick={handleSubmitReview}
+          className="mt-4 w-full p-3 bg-[#b3876f] text-white rounded-lg hover:bg-[#8f6d4b] transition"
+        >
+          Submit Review
+        </button>
       </div>
     </div>
   );
