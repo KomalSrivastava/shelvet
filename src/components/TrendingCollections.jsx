@@ -3,7 +3,7 @@ import Maskgroup from "../assets/Mask group.png";
 import Maskgroup1 from "../assets/Mask group1.png";
 import Maskgroup2 from "../assets/Mask group2.png";
 import BagIcon from "../assets/Bag.png";
-import BookmarkIcon from "../assets/bookmark.png";
+import BookmarkIcon from "../assets/Bookmark.png";
 
 const TrendingCollections = () => {
   const products = [
